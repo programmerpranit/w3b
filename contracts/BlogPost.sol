@@ -5,7 +5,7 @@ pragma solidity >=0.7.0 <0.9.0;
 
 contract BlogPost {
 
-    uint public counter;
+    uint256 public counter;
     address public owner;
 
     constructor() {
@@ -14,38 +14,38 @@ contract BlogPost {
     }
 
     struct Blog {
-        uint id;
+        uint256 id;
         string title;
         string imageUri;
         string content;
         address owner;
-        uint categoryId;
+        uint64 categoryId;
     }
 
     event blogCreated (
-        uint id,
+        uint256 id,
         string title,
         string imageUri,
         string content,
         address owner,
-        uint categoryId
+        uint64 categoryId
     );
 
     event blogUpdated (
-        uint id,
+        uint256 id,
         string title,
         string imageUri,
         string content,
         address owner,
-        uint categoryId
+        uint64 categoryId
     );
 
-    mapping (uint => Blog) Blogs;
+    mapping (uint256 => Blog) Blogs;
     // mapping (address => mapping(uint256 => Blog)) UserBlogs;
 
-    function createBlog( string memory title, string memory imageUri, string memory content, uint categoryId) public {
+    function createBlog( string memory title, string memory imageUri, string memory content, uint64 categoryId) public {
 
-        Blog memory newBlog;
+        Blog storage newBlog = Blogs[counter];
         newBlog.id = counter;
         newBlog.title = title;
         newBlog.imageUri = imageUri;
@@ -53,18 +53,17 @@ contract BlogPost {
         newBlog.owner = msg.sender;
         newBlog.categoryId = categoryId;
 
-        Blogs[counter] = newBlog;
-        counter = counter + 1;
         emit blogCreated(counter, title, imageUri, content, msg.sender, categoryId);
+        counter++;
     }
 
-    function getBlog(uint id) public view returns ( 
-        uint, //id
+    function getBlog(uint256 id) public view returns ( 
+        uint256, //id
         string memory, // title
         string memory, // imageUri
         string memory, // content
         address, // owner
-        uint // categoryId
+        uint64 // categoryId
     ) {
 
         require(id < counter, "No Such Blogpost Exists");
@@ -81,16 +80,7 @@ contract BlogPost {
 
     }
 
-
-    // function getBlog(uint256 id) public view returns (Blog memory) {
-        
-    //     require(id < counter, "No Such Blogpost Available");
-    //     Blog storage blog = Blogs[id];
-
-    //     return blog;
-    // }
-
-    function updateBlog(uint id, string memory title, string memory imageUri, string memory content, uint categoryId) public {
+    function updateBlog(uint64 id, string memory title, string memory imageUri, string memory content, uint64 categoryId) public {
 
         require(id < counter, "No Such Blogpost Exists");
         
